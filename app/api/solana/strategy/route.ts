@@ -29,11 +29,11 @@ export async function GET() {
     }
 
     // 获取历史价格数据
-    const historyResponse = await axios.get('http://localhost:3000/api/solana/history');
+    const historyResponse = await axios.get('/api/solana/history');
     const priceData = historyResponse.data.data.map((item: any) => item.price);
     
     // 获取当前价格
-    const priceResponse = await axios.get('http://localhost:3000/api/solana/price');
+    const priceResponse = await axios.get('/api/solana/price');
     const currentPrice = priceResponse.data.price;
     
     // 计算移动平均线
