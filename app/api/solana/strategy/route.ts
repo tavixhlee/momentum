@@ -16,6 +16,20 @@ const CACHE_TTL = 15 * 60 * 1000; // 15分钟缓存
 // 上一个信号状态
 let lastSignal: string | null = null;
 
+// 构建基础URL
+const getBaseUrl = () => {
+  // 在Vercel环境中
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // 在其他生产环境中，可能需要配置自定义域名
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  // 在开发环境中
+  return 'http://localhost:3000';
+};
+
 export async function GET() {
   try {
     const currentTime = Date.now();
@@ -29,11 +43,12 @@ export async function GET() {
     }
 
     // 获取历史价格数据
-    const historyResponse = await axios.get('/api/solana/history');
+    const baseUrl = getBaseUrl();
+    const historyResponse = await axios.get(`${baseUrl}/api/solana/history`);
     const priceData = historyResponse.data.data.map((item: any) => item.price);
     
     // 获取当前价格
-    const priceResponse = await axios.get('/api/solana/price');
+    const priceResponse = await axios.get(`${baseUrl}/api/solana/price`);
     const currentPrice = priceResponse.data.price;
     
     // 计算移动平均线
